@@ -18,7 +18,24 @@ export const metadata: Metadata = {
   title: "Mohin Vinayak | Systems & Software",
   description:
     "ENC student at TIET. Engineering high-performance systems, embedded Linux BSPs, and production-ready developer tools.",
-  generator: "v0.app",
+  keywords: ["Mohin Vinayak", "software engineer", "portfolio", "Thapar", "TIET", "Python", "TypeScript", "C++", "full stack"],
+  authors: [{ name: "Mohin Vinayak", url: "https://github.com/MohinVinayak" }],
+  openGraph: {
+    type: "website",
+    title: "Mohin Vinayak | Systems & Software",
+    description: "ENC undergrad at Thapar. Building software that ships — async LLM evaluation, VS Code extensions, and chess engines.",
+    siteName: "Mohin Vinayak",
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mohin Vinayak | Systems & Software",
+    description: "ENC undergrad at Thapar. Building software that ships.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export const viewport: Viewport = {

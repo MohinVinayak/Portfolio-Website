@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 const links = [
   { label: "GitHub", href: "https://github.com/MohinVinayak" },
@@ -9,15 +9,16 @@ const links = [
 ]
 
 export function Footer() {
-  const [time, setTime] = useState("")
+  const timeRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     const update = () => {
+      if (!timeRef.current) return
       const now = new Date()
       const h = now.getHours().toString().padStart(2, "0")
       const m = now.getMinutes().toString().padStart(2, "0")
       const s = now.getSeconds().toString().padStart(2, "0")
-      setTime(`${h}:${m}:${s} IST`)
+      timeRef.current.textContent = `${h}:${m}:${s} IST`
     }
     update()
     const id = setInterval(update, 1000)
@@ -58,7 +59,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="font-mono text-xs tracking-widest text-muted-foreground/70">
             <span className="mr-2 uppercase">Local</span>
-            <span className="text-foreground tabular-nums">{time}</span>
+            <span ref={timeRef} className="text-foreground tabular-nums" />
           </div>
 
           <div className="flex gap-8">

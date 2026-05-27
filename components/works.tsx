@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
+import Image from "next/image"
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const
 
@@ -13,6 +14,7 @@ const projects = [
     tags: ["Python", "FastAPI", "PostgreSQL", "Async"],
     description: "Async evaluation platform for LLM outputs. Rule-based scoring, semantic checks, and LLM-as-judge pipelines.",
     href: "https://github.com/MohinVinayak/Arbiter",
+    image: "/projects/arbiter.jpg",
     accent: "text-accent",
     bar: "bg-accent",
     barCss: "var(--accent)",
@@ -23,6 +25,7 @@ const projects = [
     tags: ["TypeScript", "VS Code API", "Webview"],
     description: "VS Code extension on the marketplace. An animated companion tied to debug events with canvas rendering.",
     href: "https://github.com/MohinVinayak/Code-Dog",
+    image: "/projects/code-dog.jpg",
     accent: "text-emerald-300",
     bar: "bg-emerald-400",
     barCss: "rgb(52 211 153)",
@@ -33,6 +36,7 @@ const projects = [
     tags: ["Python", "Pygame", "Heuristics"],
     description: "A chess engine that plays to lose. Custom heuristics that invert standard board evaluation.",
     href: "https://github.com/MohinVinayak/LoserChess",
+    image: "/projects/loser-chess.jpg",
     accent: "text-amber-300",
     bar: "bg-amber-400",
     barCss: "rgb(251 191 36)",
@@ -161,6 +165,28 @@ export function Works() {
                     </span>
                   ))}
                 </div>
+              </div>
+
+              {/* Hover preview image — desktop only */}
+              <div
+                className="hidden md:block absolute right-12 top-1/2 -translate-y-1/2 w-72 lg:w-80 aspect-video rounded-lg overflow-hidden pointer-events-none"
+                style={{
+                  opacity: isHovered ? 1 : 0,
+                  transform: isHovered ? "translateY(-50%) scale(1)" : "translateY(-50%) scale(0.95)",
+                  transition: "opacity 0.3s ease, transform 0.3s ease",
+                  zIndex: 20,
+                }}
+              >
+                <Image
+                  src={project.image}
+                  alt={`${project.title} preview`}
+                  fill
+                  className="object-cover"
+                  sizes="320px"
+                  loading="lazy"
+                />
+                {/* Gradient overlay for blending */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               </div>
             </motion.a>
           )
