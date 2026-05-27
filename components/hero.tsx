@@ -33,7 +33,7 @@ export function Hero() {
     : {}
 
   return (
-    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-[#050505]">
+    <section ref={containerRef} className="relative min-h-[100dvh] w-full overflow-hidden bg-[#050505]">
       {/* Parallax sphere */}
       <motion.div style={{ y: sphereY, scale: sphereScale }} className="absolute inset-0">
         <SentientSphere />
