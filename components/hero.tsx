@@ -1,23 +1,16 @@
 "use client"
 
-import { useRef, useState, useEffect } from "react"
+import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { ArrowDown } from "lucide-react"
 import { SentientSphere } from "./sentient-sphere"
 
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null)
-  const [hasAnimated, setHasAnimated] = useState(false)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   })
-
-  // Mark animations as completed after initial mount
-  useEffect(() => {
-    const timer = setTimeout(() => setHasAnimated(true), 2000)
-    return () => clearTimeout(timer)
-  }, [])
 
   // Smooth parallax + fade out on scroll
   const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 0.6, 0])
@@ -26,11 +19,6 @@ export function Hero() {
   const sphereScale = useTransform(scrollYProgress, [0, 1], [1, 1.15])
 
   const ease = [0.25, 0.46, 0.45, 0.94] as const
-
-  // After animation completes, use static values to prevent re-trigger on mobile scroll-back
-  const animatedProps = hasAnimated
-    ? { initial: false as const }
-    : {}
 
   return (
     <section ref={containerRef} className="relative min-h-[100dvh] w-full overflow-hidden bg-[#050505]">
@@ -45,10 +33,10 @@ export function Hero() {
       {/* Top status strip */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
         transition={{ duration: 1, delay: 0.4, ease }}
         className="absolute top-0 inset-x-0 z-20 px-6 md:px-12 pt-24 md:pt-28 flex items-center justify-between font-mono text-xs tracking-[0.3em] text-muted-foreground/60 uppercase pointer-events-none"
-        {...animatedProps}
       >
         <span className="flex items-center gap-2">
           <span className="relative flex h-1.5 w-1.5">
@@ -68,10 +56,10 @@ export function Hero() {
         {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.9, delay: 0.5, ease }}
           className="font-mono text-xs md:text-sm tracking-[0.35em] text-muted-foreground/80 mb-8 md:mb-10 uppercase"
-          {...animatedProps}
         >
           <span className="text-accent">— </span> Software Engineer · Portfolio
         </motion.p>
@@ -80,11 +68,11 @@ export function Hero() {
         <div className="overflow-hidden">
           <motion.h1
             initial={{ y: "110%" }}
-            animate={{ y: 0 }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 1.1, delay: 0.55, ease }}
             className="font-sans font-light tracking-[-0.02em] leading-[0.85]"
             style={{ fontSize: "clamp(4rem, 12vw, 10rem)" }}
-            {...animatedProps}
           >
             MOHIN
           </motion.h1>
@@ -93,7 +81,8 @@ export function Hero() {
         <div className="overflow-hidden">
           <motion.h2
             initial={{ y: "110%" }}
-            animate={{ y: 0 }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 1.1, delay: 0.7, ease }}
             className="font-sans font-light italic tracking-[-0.02em] leading-[0.85] mt-1"
             style={{
@@ -101,7 +90,6 @@ export function Hero() {
               WebkitTextStroke: "1.5px rgba(255,255,255,0.55)",
               color: "transparent",
             }}
-            {...animatedProps}
           >
             VINAYAK
           </motion.h2>
@@ -110,10 +98,10 @@ export function Hero() {
         {/* Tagline + meta row */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.9, delay: 1.0, ease }}
           className="mt-10 md:mt-14 flex flex-col md:flex-row md:items-end md:justify-between gap-6"
-          {...animatedProps}
         >
           <p className="font-mono text-xs md:text-sm tracking-[0.18em] text-muted-foreground uppercase max-w-md leading-relaxed">
             ENC undergrad at Thapar.
@@ -142,11 +130,11 @@ export function Hero() {
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
         transition={{ delay: 1.6, duration: 0.8 }}
         style={{ opacity }}
         className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10"
-        {...animatedProps}
       >
         <div className="flex flex-col items-center gap-2">
           <div className="relative h-8 w-px overflow-hidden bg-white/10">

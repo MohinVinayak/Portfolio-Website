@@ -5,7 +5,6 @@ import { motion } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
 import Image from "next/image"
 
-
 const ease = [0.25, 0.46, 0.45, 0.94] as const
 
 const projects = [
@@ -46,6 +45,41 @@ const projects = [
 
 export function Works() {
   const [hovered, setHovered] = useState<number | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Mobile scroll highlighting without triggering framer-motion layout thrashing
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (!window.matchMedia("(hover: none)").matches) return // Only run on touch devices
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let maxRatio = 0
+        let bestIndex = -1
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio
+            bestIndex = Number(entry.target.getAttribute("data-index"))
+          }
+        })
+
+        if (bestIndex !== -1 && maxRatio > 0.4) {
+          setHovered(bestIndex)
+        }
+      },
+      {
+        root: null,
+        rootMargin: "-20% 0px -20% 0px", // Trigger closer to center
+        threshold: [0, 0.2, 0.4, 0.6, 0.8, 1], // Multiple thresholds for accurate ratio tracking
+      }
+    )
+
+    const nodes = containerRef.current?.querySelectorAll(".project-item")
+    nodes?.forEach((node) => observer.observe(node))
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <section id="projects" className="relative pt-32 md:pt-44 pb-16 md:pb-20 px-6 md:px-12 border-t border-white/[0.07]">
@@ -67,7 +101,7 @@ export function Works() {
       </motion.div>
 
       {/* Projects list */}
-      <div onMouseLeave={() => setHovered(null)}>
+      <div ref={containerRef} onMouseLeave={() => setHovered(null)}>
         {projects.map((project, index) => {
           const isHovered = hovered === index
           const isDimmed = hovered !== null && hovered !== index
@@ -79,17 +113,13 @@ export function Works() {
               target="_blank"
               rel="noreferrer"
               data-cursor-hover
+              data-index={index}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              onViewportEnter={() => {
-                if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) {
-                  setHovered(index)
-                }
-              }}
-              viewport={{ once: false, margin: "-40% 0px -40% 0px" }}
+              viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.8, delay: index * 0.08, ease }}
               onMouseEnter={() => setHovered(index)}
-              className="group relative block border-t border-white/[0.07] last:border-b py-10 md:py-14 will-change-transform"
+              className="project-item group relative block border-t border-white/[0.07] last:border-b py-10 md:py-14 will-change-transform"
               style={{
                 opacity: isDimmed ? 0.3 : 1,
                 transition: "opacity 0.25s ease",
