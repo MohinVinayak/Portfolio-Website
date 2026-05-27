@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
-import Image from "next/image"
+
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const
 
@@ -167,27 +167,7 @@ export function Works() {
                 </div>
               </div>
 
-              {/* Hover preview image — desktop only */}
-              <div
-                className="hidden md:block absolute right-12 top-1/2 -translate-y-1/2 w-72 lg:w-80 aspect-video rounded-lg overflow-hidden pointer-events-none"
-                style={{
-                  opacity: isHovered ? 1 : 0,
-                  transform: isHovered ? "translateY(-50%) scale(1)" : "translateY(-50%) scale(0.95)",
-                  transition: "opacity 0.3s ease, transform 0.3s ease",
-                  zIndex: 20,
-                }}
-              >
-                <Image
-                  src={project.image}
-                  alt={`${project.title} preview`}
-                  fill
-                  className="object-cover"
-                  sizes="320px"
-                  loading="lazy"
-                />
-                {/* Gradient overlay for blending */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              </div>
+
             </motion.a>
           )
         })}
