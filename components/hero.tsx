@@ -12,7 +12,6 @@ export function Hero() {
     offset: ["start start", "end start"],
   })
 
-  // Smooth parallax + fade out on scroll
   const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 0.6, 0])
   const y = useTransform(scrollYProgress, [0, 1], [0, -120])
   const sphereY = useTransform(scrollYProgress, [0, 1], [0, 80])
@@ -21,20 +20,23 @@ export function Hero() {
   const ease = [0.25, 0.46, 0.45, 0.94] as const
 
   return (
-    <section ref={containerRef} className="relative min-h-[100dvh] w-full overflow-hidden bg-[#050505]">
+    <section
+      ref={containerRef}
+      className="relative h-screen w-full overflow-hidden bg-[#050505]"
+      style={{ minHeight: "100dvh" }}
+    >
       {/* Parallax sphere */}
       <motion.div style={{ y: sphereY, scale: sphereScale }} className="absolute inset-0">
         <SentientSphere />
       </motion.div>
 
-      {/* Subtle web watermark — very faint */}
+      {/* Subtle web watermark */}
       <div className="absolute inset-0 spider-web-corner opacity-[0.04] pointer-events-none mix-blend-screen" />
 
       {/* Top status strip */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.4, ease }}
         className="absolute top-0 inset-x-0 z-20 px-6 md:px-12 pt-24 md:pt-28 flex items-center justify-between font-mono text-xs tracking-[0.3em] text-muted-foreground/60 uppercase pointer-events-none"
       >
@@ -48,28 +50,26 @@ export function Hero() {
         <span className="hidden md:inline">India · IST</span>
       </motion.div>
 
-      {/* Main composition — unified block, MOHIN VINAYAK stacked */}
+      {/* Main content — absolutely centered so it's immune to viewport height changes */}
       <motion.div
         style={{ opacity, y }}
-        className="relative z-10 h-full flex flex-col justify-center px-6 md:px-12"
+        className="absolute inset-0 z-10 flex flex-col justify-center px-6 md:px-12"
       >
         {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5, ease }}
           className="font-mono text-xs md:text-sm tracking-[0.35em] text-muted-foreground/80 mb-8 md:mb-10 uppercase"
         >
           <span className="text-accent">— </span> Software Engineer · Portfolio
         </motion.p>
 
-        {/* Wordmark — single block, both names together */}
+        {/* Wordmark */}
         <div className="overflow-hidden">
           <motion.h1
             initial={{ y: "110%" }}
-            whileInView={{ y: 0 }}
-            viewport={{ once: true }}
+            animate={{ y: 0 }}
             transition={{ duration: 1.1, delay: 0.55, ease }}
             className="font-sans font-light tracking-[-0.02em] leading-[0.85]"
             style={{ fontSize: "clamp(4rem, 12vw, 10rem)" }}
@@ -81,8 +81,7 @@ export function Hero() {
         <div className="overflow-hidden">
           <motion.h2
             initial={{ y: "110%" }}
-            whileInView={{ y: 0 }}
-            viewport={{ once: true }}
+            animate={{ y: 0 }}
             transition={{ duration: 1.1, delay: 0.7, ease }}
             className="font-sans font-light italic tracking-[-0.02em] leading-[0.85] mt-1"
             style={{
@@ -95,11 +94,10 @@ export function Hero() {
           </motion.h2>
         </div>
 
-        {/* Tagline + meta row */}
+        {/* Tagline + CTA */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 1.0, ease }}
           className="mt-10 md:mt-14 flex flex-col md:flex-row md:items-end md:justify-between gap-6"
         >
@@ -130,8 +128,7 @@ export function Hero() {
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
+        animate={{ opacity: 1 }}
         transition={{ delay: 1.6, duration: 0.8 }}
         style={{ opacity }}
         className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10"
