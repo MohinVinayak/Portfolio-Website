@@ -48,30 +48,28 @@ export function Works() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Mobile scroll highlighting without triggering framer-motion layout thrashing
+  const [isTouch, setIsTouch] = useState(false)
+
   useEffect(() => {
     if (typeof window === "undefined") return
-    if (!window.matchMedia("(hover: none)").matches) return // Only run on touch devices
+    const touch = window.matchMedia("(hover: none)").matches
+    setIsTouch(touch)
+    if (!touch) return // Only run on touch devices
 
+    // Use a tight rootMargin so it only triggers when crossing the absolute center of the screen
+    // threshold: 0 ensures it only fires once upon entering/leaving the center band
     const observer = new IntersectionObserver(
       (entries) => {
-        let maxRatio = 0
-        let bestIndex = -1
-
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-            maxRatio = entry.intersectionRatio
-            bestIndex = Number(entry.target.getAttribute("data-index"))
+          if (entry.isIntersecting) {
+            setHovered(Number(entry.target.getAttribute("data-index")))
           }
         })
-
-        if (bestIndex !== -1 && maxRatio > 0.4) {
-          setHovered(bestIndex)
-        }
       },
       {
         root: null,
-        rootMargin: "-20% 0px -20% 0px", // Trigger closer to center
-        threshold: [0, 0.2, 0.4, 0.6, 0.8, 1], // Multiple thresholds for accurate ratio tracking
+        rootMargin: "-45% 0px -45% 0px",
+        threshold: 0,
       }
     )
 
@@ -118,7 +116,7 @@ export function Works() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.8, delay: index * 0.08, ease }}
-              onMouseEnter={() => setHovered(index)}
+              onMouseEnter={() => !isTouch && setHovered(index)}
               className="project-item group relative block border-t border-white/[0.07] last:border-b py-10 md:py-14 will-change-transform"
               style={{
                 opacity: isDimmed ? 0.3 : 1,
