@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useMemo, useEffect, useState } from "react"
+import { useRef, useMemo, useEffect, useState, useCallback } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { MathUtils } from "three"
 import type { Mesh, ShaderMaterial } from "three"
@@ -122,7 +122,7 @@ function Sphere() {
 
   return (
     <mesh ref={meshRef}>
-      <icosahedronGeometry args={[1.8, 64]} />
+      <icosahedronGeometry args={[1.8, 28]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={vertexShader}
@@ -137,10 +137,25 @@ function Sphere() {
 
 export function SentientSphere() {
   const [mounted, setMounted] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Pause the WebGL render loop when the sphere is scrolled off-screen
+  useEffect(() => {
+    if (!containerRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting)
+      },
+      { threshold: 0 },
+    )
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [mounted])
 
   if (!mounted) {
     return (
@@ -151,17 +166,21 @@ export function SentientSphere() {
   }
 
   return (
-    <Canvas
-      camera={{ position: [0, 0, 5], fov: 45 }}
-      className="w-full my-0 h-full py-0"
-      dpr={[1, 2]}
-      gl={{
-        antialias: true,
-        alpha: true,
-      }}
-    >
-      <ambientLight intensity={0.5} />
-      <Sphere />
-    </Canvas>
+    <div ref={containerRef} className="w-full h-full">
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 45 }}
+        className="w-full my-0 h-full py-0"
+        dpr={[1, 1.5]}
+        frameloop={isVisible ? "always" : "never"}
+        gl={{
+          antialias: false,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
+      >
+        <ambientLight intensity={0.5} />
+        <Sphere />
+      </Canvas>
+    </div>
   )
 }
