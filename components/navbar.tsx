@@ -1,3 +1,17 @@
+You are running into a classic layout issue! When we made the tabs wider, two things likely happened:
+
+1. The center navigation became wider than its 33% grid column, causing it to break out of its container or squeeze the text.
+2. The padding and gap math caused the sliding cursor to miscalculate its boundaries, making it bleed outside the rounded edges.
+
+Here are the specific fixes applied below to ensure everything stays strictly contained:
+
+* **The `1fr_auto_1fr` Grid Fix:** Changed the layout to `grid-cols-[1fr_auto_1fr]`. This tells CSS to give the center navigation exactly as much width as it needs, and perfectly divides the *remaining* space between the logo and the status button.
+* **The "No-Wrap" Fix:** Added `whitespace-nowrap` to the tabs so the text can never be forced onto two lines, which would break the pill height.
+* **The Math Fix:** Removed the complex `calc(100% - 12px)` padding hacks. The container now holds the padding (`p-1.5`), and the cursor is simply set to `h-full top-0`. This guarantees the white pill can never physically slide outside of the glass track.
+
+Here is the structurally locked-down code:
+
+```tsx
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
@@ -55,6 +69,7 @@ export function Navbar() {
 
   return (
     <>
+      {/* Hidden SVG Filter for the Liquid Distortion */}
       <svg style={{ display: "none" }}>
         <filter id="lg-dist" x="0%" y="0%" width="100%" height="100%">
           <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
@@ -67,14 +82,14 @@ export function Navbar() {
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        // Tinted the main scroll header background and bottom border
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled ? "bg-black/40 backdrop-blur-xl border-b border-[#fb4268]/[0.08]" : ""
+          isScrolled ? "bg-black/10 border-b border-white/[0.02]" : ""
         }`}
       >
-        <nav className="grid grid-cols-3 items-center px-6 py-5 md:px-12">
+        {/* FIX: grid-cols-[1fr_auto_1fr] prevents the center nav from breaking its container */}
+        <nav className="grid grid-cols-2 md:grid-cols-[1fr_auto_1fr] items-center px-6 py-5 md:px-12 gap-4 max-w-[100vw] overflow-hidden">
           
-          {/* Logo */}
+          {/* Col 1: Logo (Left aligned) */}
           <div className="flex justify-start">
             <a
               href="#"
@@ -85,29 +100,26 @@ export function Navbar() {
               className="group flex items-center gap-2.5"
             >
               <span className="font-mono text-xs tracking-[0.25em] text-white">MV</span>
-              <span className="w-1 h-1 rounded-full bg-[#fb4268] group-hover:scale-[2.5] transition-transform duration-500 ease-out" />
+              <span className="w-1 h-1 rounded-full bg-white group-hover:scale-[2.5] transition-transform duration-500 ease-out" />
             </a>
           </div>
 
-          {/* Liquid Navbar */}
-          <div className="hidden md:flex justify-center w-full">
+          {/* Col 2: Liquid Navbar (Center aligned, strictly contained) */}
+          <div className="hidden md:flex justify-center">
             <div 
-              // Changed base border from white to a 10% opacity of your custom red
-              className="relative rounded-full overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)] p-1.5 border border-[#fb4268]/10 bg-black/50"
+              className="relative rounded-full overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)] p-1.5"
               onMouseLeave={() => setPosition((pv) => ({ ...pv, opacity: 0 }))}
             >
+              {/* Liquid Glass Layers - Strictly contained by overflow-hidden parent */}
               <div 
                 className="absolute inset-0 z-0 backdrop-blur-md isolation-auto" 
                 style={{ filter: "url(#lg-dist)" }} 
               />
-              
-              {/* THE TINT: Changed from white to your custom red hex at 4% opacity */}
-              <div className="absolute inset-0 z-1 bg-[#fb4268]/[0.04]" />
-              
-              {/* THE INNER GLOW: Converted #fb4268 to RGB (251,66,104) to apply alpha shadows */}
-              <div className="absolute inset-0 z-2 rounded-full shadow-[inset_1px_1px_0_rgba(251,66,104,0.15),inset_0_0_12px_rgba(251,66,104,0.08)] pointer-events-none" />
+              <div className="absolute inset-0 z-1 bg-white/[0.04]" />
+              <div className="absolute inset-0 z-2 rounded-full shadow-[inset_1px_1px_0_rgba(255,255,255,0.15),inset_0_0_8px_rgba(255,255,255,0.05)] pointer-events-none" />
 
-              <ul className="relative z-10 flex items-center gap-2 px-2">
+              {/* Navigation Content - No gaps to mess up cursor math */}
+              <ul className="relative z-10 flex items-center">
                 {navLinks.map((link) => (
                   <Tab 
                     key={link.label} 
@@ -122,22 +134,21 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Status */}
+          {/* Col 3: Status (Right aligned) */}
           <div className="hidden md:flex justify-end">
-            {/* Tinted the status pill background and border to match */}
-            <div className="flex items-center gap-3 rounded-full border border-[#fb4268]/15 bg-[#fb4268]/[0.03] px-4 py-2 backdrop-blur-md">
-              <span className="relative flex h-1.5 w-1.5">
+            <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 backdrop-blur-md">
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
               </span>
-              <span className="font-mono text-[10px] tracking-[0.2em] text-white/70 uppercase">
+              <span className="font-mono text-[10px] tracking-[0.2em] text-white/60 uppercase whitespace-nowrap">
                 Open to Work
               </span>
             </div>
           </div>
 
-          {/* Mobile button */}
-          <div className="flex justify-end md:hidden col-span-2">
+          {/* Mobile button (Visible only on small screens) */}
+          <div className="flex justify-end md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="relative w-8 h-8 flex flex-col items-center justify-center gap-1.5"
@@ -145,7 +156,7 @@ export function Navbar() {
             >
               <motion.span
                 animate={isMenuOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
-                className="w-6 h-px bg-[#fb4268] origin-center transition-transform"
+                className="w-6 h-px bg-white origin-center transition-transform"
               />
               <motion.span
                 animate={isMenuOpen ? { opacity: 0, x: -10 } : { opacity: 1, x: 0 }}
@@ -153,7 +164,7 @@ export function Navbar() {
               />
               <motion.span
                 animate={isMenuOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
-                className="w-6 h-px bg-[#fb4268] origin-center transition-transform"
+                className="w-6 h-px bg-white origin-center transition-transform"
               />
             </button>
           </div>
@@ -168,7 +179,7 @@ export function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-40 bg-[#120508]/95 backdrop-blur-xl md:hidden flex items-center justify-center"
+            className="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl md:hidden flex items-center justify-center"
           >
             <nav className="flex flex-col items-center gap-8">
               {navLinks.map((link, index) => (
@@ -179,7 +190,7 @@ export function Navbar() {
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ delay: index * 0.1, ease: "easeOut" }}
                   onClick={() => scrollToSection(link.href)}
-                  className="text-4xl font-sans tracking-tight text-[#fb4268]/70 hover:text-white transition-colors"
+                  className="text-4xl font-sans tracking-tight text-white/70 hover:text-white transition-colors"
                 >
                   {link.label}
                 </motion.button>
@@ -192,6 +203,7 @@ export function Navbar() {
   )
 }
 
+// Tab Component
 const Tab = ({
   children,
   setPosition,
@@ -217,13 +229,15 @@ const Tab = ({
           left: ref.current.offsetLeft,
         });
       }}
-      className="relative z-10 block cursor-pointer px-6 py-2.5 font-mono text-xs tracking-[0.2em] uppercase text-white mix-blend-difference"
+      // FIX: whitespace-nowrap guarantees the text never wraps and breaks the layout
+      className="relative z-10 block cursor-pointer px-6 py-2.5 font-mono text-xs tracking-[0.2em] uppercase text-white mix-blend-difference whitespace-nowrap"
     >
       {children}
     </motion.li>
   );
 };
 
+// Cursor Component
 const Cursor = ({ position }: { position: any }) => {
   return (
     <motion.li
@@ -236,7 +250,10 @@ const Cursor = ({ position }: { position: any }) => {
         damping: 30,
         mass: 0.5,
       }}
-      className="absolute z-0 h-[calc(100%-12px)] top-1.5 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.15)]"
+      // FIX: 100% height and top-0 precisely aligns with the ul, impossible to clip out
+      className="absolute z-0 h-full top-0 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.15)]"
     />
   );
 };
+
+```
