@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const navLinks = [
@@ -14,6 +14,13 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  
+  // State for the animated sliding cursor
+  const [position, setPosition] = useState({
+    left: 0,
+    width: 0,
+    opacity: 0,
+  })
 
   useEffect(() => {
     let ticking = false
@@ -73,21 +80,22 @@ export function Navbar() {
             <span className="w-1 h-1 rounded-full bg-accent group-hover:scale-[2.5] transition-transform duration-300" />
           </a>
 
-          {/* Desktop nav */}
-          <ul className="hidden md:flex items-center gap-10">
+          {/* Desktop nav with Sliding Cursor */}
+          <ul 
+            className="hidden md:flex relative items-center rounded-full border border-white/[0.06] bg-background/50 p-1.5"
+            onMouseLeave={() => setPosition((pv) => ({ ...pv, opacity: 0 }))}
+          >
             {navLinks.map((link, index) => (
-              <li key={link.label}>
-                <button
-                  onClick={() => scrollToSection(link.href)}
-                  className="group relative font-mono text-xs tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors duration-300 uppercase"
-                  data-cursor-hover
-                >
-                  <span className="text-accent/80 mr-1.5 tabular-nums">0{index + 1}</span>
-                  {link.label}
-                  <span className="absolute -bottom-1.5 left-0 w-0 h-px bg-foreground group-hover:w-full transition-all duration-300" />
-                </button>
-              </li>
+              <Tab 
+                key={link.label} 
+                setPosition={setPosition}
+                onClick={() => scrollToSection(link.href)}
+              >
+                <span className="text-accent/80 mr-1.5 tabular-nums">0{index + 1}</span>
+                {link.label}
+              </Tab>
             ))}
+            <Cursor position={position} />
           </ul>
 
           {/* Status */}
@@ -155,3 +163,46 @@ export function Navbar() {
     </>
   )
 }
+
+// Extracted Tab Component
+const Tab = ({
+  children,
+  setPosition,
+  onClick,
+}: {
+  children: React.ReactNode;
+  setPosition: any;
+  onClick: () => void;
+}) => {
+  const ref = useRef<HTMLLIElement>(null);
+  
+  return (
+    <li
+      ref={ref}
+      onClick={onClick}
+      onMouseEnter={() => {
+        if (!ref.current) return;
+        const { width } = ref.current.getBoundingClientRect();
+        setPosition({
+          width,
+          opacity: 1,
+          left: ref.current.offsetLeft,
+        });
+      }}
+      className="relative z-10 block cursor-pointer px-4 py-2 font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300"
+    >
+      {children}
+    </li>
+  );
+};
+
+// Extracted Cursor Component
+const Cursor = ({ position }: { position: any }) => {
+  return (
+    <motion.li
+      animate={position}
+      // Height calc ensures the cursor fills the container while respecting the 1.5 padding on the ul
+      className="absolute z-0 h-[calc(100%-12px)] rounded-full bg-white/[0.08] top-1.5"
+    />
+  );
+};
