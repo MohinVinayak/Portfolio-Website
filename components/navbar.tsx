@@ -80,31 +80,30 @@ export function Navbar() {
             <span className="w-1 h-1 rounded-full bg-accent group-hover:scale-[2.5] transition-transform duration-300" />
           </a>
 
-          {/* Desktop nav with Sliding Cursor */}
+          {/* Desktop nav with Animated Sliding Pill */}
           <ul 
-            className="hidden md:flex relative items-center rounded-full border border-white/[0.06] bg-background/50 p-1.5"
+            className="hidden md:flex relative items-center w-fit rounded-full border-2 border-foreground/20 bg-background/50 p-1"
             onMouseLeave={() => setPosition((pv) => ({ ...pv, opacity: 0 }))}
           >
-            {navLinks.map((link, index) => (
+            {navLinks.map((link) => (
               <Tab 
                 key={link.label} 
                 setPosition={setPosition}
                 onClick={() => scrollToSection(link.href)}
               >
-                <span className="text-accent/80 mr-1.5 tabular-nums">0{index + 1}</span>
                 {link.label}
               </Tab>
             ))}
             <Cursor position={position} />
           </ul>
 
-          {/* Status */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Status - Pill shape for consistency */}
+          <div className="hidden md:flex items-center gap-3 rounded-full border border-white/[0.06] bg-white/[0.02] px-4 py-2">
             <span className="relative flex h-1.5 w-1.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
             </span>
-            <span className="font-mono text-xs tracking-[0.25em] text-muted-foreground uppercase">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
               Open to Work
             </span>
           </div>
@@ -152,7 +151,6 @@ export function Navbar() {
                   onClick={() => scrollToSection(link.href)}
                   className="group text-4xl font-sans tracking-tight text-foreground"
                 >
-                  <span className="text-accent font-mono text-sm mr-3">0{index + 1}</span>
                   {link.label}
                 </motion.button>
               ))}
@@ -164,7 +162,7 @@ export function Navbar() {
   )
 }
 
-// Extracted Tab Component
+// Tab Component - Clean and minimal
 const Tab = ({
   children,
   setPosition,
@@ -189,20 +187,19 @@ const Tab = ({
           left: ref.current.offsetLeft,
         });
       }}
-      className="relative z-10 block cursor-pointer px-4 py-2 font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300"
+      className="relative z-10 block cursor-pointer px-3 py-1.5 text-xs uppercase text-accent mix-blend-difference md:px-5 md:py-3 md:text-base"
     >
       {children}
     </li>
   );
 };
 
-// Extracted Cursor Component
+// Cursor Component - Smooth animated pill
 const Cursor = ({ position }: { position: any }) => {
   return (
     <motion.li
       animate={position}
-      // Height calc ensures the cursor fills the container while respecting the 1.5 padding on the ul
-      className="absolute z-0 h-[calc(100%-12px)] rounded-full bg-white/[0.08] top-1.5"
+      className="absolute z-0 h-7 rounded-full bg-foreground/10 md:h-12"
     />
   );
 };
