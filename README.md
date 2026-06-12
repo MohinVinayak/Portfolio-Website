@@ -1,9 +1,8 @@
-
 # Mohin Vinayak — Portfolio
 
 A meticulously engineered digital portfolio built on **Next.js 15**, **Framer Motion**, **Three.js**, and **Lenis**. High-performance, brutalist editorial design with zero compromises on smoothness, precision, or visual impact.
 
-> Ship something real. The only metric that counts.
+**Live Demo:** [Open Deployed Site](https://pf2-q223-htgewbff0-mohinvinayak-3707s-projects.vercel.app/)
 
 ---
 
