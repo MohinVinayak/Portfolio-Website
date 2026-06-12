@@ -1,17 +1,3 @@
-You are running into a classic layout issue! When we made the tabs wider, two things likely happened:
-
-1. The center navigation became wider than its 33% grid column, causing it to break out of its container or squeeze the text.
-2. The padding and gap math caused the sliding cursor to miscalculate its boundaries, making it bleed outside the rounded edges.
-
-Here are the specific fixes applied below to ensure everything stays strictly contained:
-
-* **The `1fr_auto_1fr` Grid Fix:** Changed the layout to `grid-cols-[1fr_auto_1fr]`. This tells CSS to give the center navigation exactly as much width as it needs, and perfectly divides the *remaining* space between the logo and the status button.
-* **The "No-Wrap" Fix:** Added `whitespace-nowrap` to the tabs so the text can never be forced onto two lines, which would break the pill height.
-* **The Math Fix:** Removed the complex `calc(100% - 12px)` padding hacks. The container now holds the padding (`p-1.5`), and the cursor is simply set to `h-full top-0`. This guarantees the white pill can never physically slide outside of the glass track.
-
-Here is the structurally locked-down code:
-
-```tsx
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
@@ -255,5 +241,3 @@ const Cursor = ({ position }: { position: any }) => {
     />
   );
 };
-
-```
