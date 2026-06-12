@@ -49,25 +49,39 @@ pnpm dev
 * **Type-Safe Easing:** Uses explicit tuple typing (`const ease: [number, number, number, number]`) to prevent Framer Motion type-inference breakdowns in Next.js strict mode.
 * **Shader-Based Parallax:** The background avoids heavy polygon meshes, utilizing a lightweight Three.js shader icosphere driven by `useTransform` tied to `scrollYProgress`.
 * **Design System:** Built on an absolute black/white contrast with a deep crimson accent (`oklch(0.55 0.21 25)`). Typography combines Playfair Display for editorial headers and Geist Mono for technical precision.
-
- **Theming:** CSS custom property switches for dark/light mode and alternate accent colors, persisted via `localStorage`.
+* **Theming:** CSS custom property switches for dark/light mode and alternate accent colors, persisted via `localStorage`.
 
 ---
 
-## File Structure (Abridged)
+## File Structure
 
 ```text
 .
 ├── app/
-│   ├── layout.tsx           # Fonts, providers
-│   ├── page.tsx             # Main view assembly
-│   └── globals.css          # Tailwind, variables
+│   ├── layout.tsx           # Root layout (fonts, providers)
+│   ├── page.tsx             # Home page (all sections)
+│   └── globals.css          # Tailwind, CSS variables, animations
 ├── components/
-│   ├── custom-cursor.tsx    # useMotionValue physics
+│   ├── hero.tsx             # Hero section (names, sphere parallax)
+│   ├── navbar.tsx           # Liquid glass pill navigation
+│   ├── about.tsx            # About statement + metadata grid
+│   ├── experience.tsx       # Work experience with bullets
+│   ├── works.tsx            # Selected projects grid
+│   ├── tech-marquee.tsx     # Outlined text carousel (Languages/Stack)
+│   ├── manifesto.tsx        # Pull quote ("Ship something real")
+│   ├── contact.tsx          # Channel grid (Email, GitHub, LinkedIn, Resume)
+│   ├── footer.tsx           # Wordmark + live clock + copyright
+│   ├── custom-cursor.tsx    # Spring physics cursor
 │   ├── smooth-scroll.tsx    # Lenis wrapper
-│   ├── sentient-sphere.tsx  # Three.js shader
-│   └── ...                  # Standard UI components
-└── ...
+│   ├── sentient-sphere.tsx  # Three.js shader sphere
+│   ├── section-blend.tsx    # Gradient transition overlay
+│   └── theme-provider.tsx   # (shadcn/ui provider)
+├── lib/
+│   └── utils.ts             # cn() utility for Tailwind merge
+├── package.json             # Project dependencies and scripts
+├── tsconfig.json            # TypeScript configuration
+├── next.config.ts           # Next.js 15 configuration
+└── components.json          # shadcn/ui configuration
 
 ```
 
