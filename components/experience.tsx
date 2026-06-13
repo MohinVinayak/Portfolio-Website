@@ -13,7 +13,6 @@ const roles = [
     bullets: [
       "Architected and modernized a modular, class-based Python Access Management System for enterprise-scale environments.",
       "Implemented dual authentication and configurable key modes, drastically reducing deployment latency.",
-      "Customized Yocto-based Linux BSPs for ARM Cortex-A7 (Toradex Colibri iMX7) embedded hardware.",
       "Managed hardware-software integration, debugging via PuTTY and remote Linux terminals.",
     ],
     stack: ["Python", "Linux", "Git", "ARM"],
