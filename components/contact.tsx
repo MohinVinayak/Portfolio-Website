@@ -32,7 +32,7 @@ const channels = [
   },
   {
     label: "Resume",
-    href: "https://drive.google.com/file/d/19sJLwb6cDnT50vNlW5flyxq88GvvwXdD/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1nWcmCOUHqPJV2aUcYr_qCmYVSX6Kchve/view?usp=drive_link",
     handle: "PDF · Drive",
     Icon: FileText,
     color: "group-hover:text-amber-300",
