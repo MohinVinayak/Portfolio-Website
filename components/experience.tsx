@@ -7,7 +7,7 @@ const ease = [0.25, 0.46, 0.45, 0.94] as const
 const roles = [
   {
     company: "CSI Computech India",
-    role: "Summer Intern",
+    role: "Software Engineer Intern",
     when: "Jun 2025 — Jul 2025",
     location: "Navi Mumbai",
     bullets: [
