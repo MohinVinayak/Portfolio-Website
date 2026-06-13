@@ -15,7 +15,7 @@ const roles = [
       "Implemented dual authentication and configurable key modes, drastically reducing deployment latency.",
       "Managed hardware-software integration, debugging via PuTTY and remote Linux terminals.",
     ],
-    stack: ["Python", "Linux", "Git", "ARM"],
+    stack: ["Python", "Linux", "Git", "SQLite"],
   },
 ]
 
