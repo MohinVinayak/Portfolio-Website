@@ -49,8 +49,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${playfair.variable} ${geistMono.variable}`}>
-      <body className="font-sans antialiased overflow-x-hidden">
-        <div className="noise-overlay" />
+      <body className="font-sans antialiased overflow-x-hidden" suppressHydrationWarning>
         {children}
         <Analytics />
       </body>

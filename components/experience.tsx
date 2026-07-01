@@ -1,12 +1,30 @@
 "use client"
 
+import { Fragment } from "react"
 import { motion } from "framer-motion"
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const
 
+// Subtle per-technology color accents
+const tagColors: Record<string, { bg: string; border: string; text: string }> = {
+  // Kosh stack
+  Celery:  { bg: "rgba(134,239,172,0.06)",  border: "rgba(134,239,172,0.25)", text: "rgba(134,239,172,0.85)" },
+  Redis:   { bg: "rgba(248,113,113,0.07)",  border: "rgba(248,113,113,0.28)", text: "rgba(248,113,113,0.85)" },
+  Docker:  { bg: "rgba(96,165,250,0.07)",   border: "rgba(96,165,250,0.28)",  text: "rgba(96,165,250,0.85)"  },
+  Docling: { bg: "rgba(192,132,252,0.07)",  border: "rgba(192,132,252,0.25)", text: "rgba(192,132,252,0.85)" },
+  Gemini:  { bg: "rgba(99,202,183,0.07)",   border: "rgba(99,202,183,0.25)",  text: "rgba(99,202,183,0.85)"  },
+  // CSI stack
+  Python:  { bg: "rgba(250,204,21,0.06)",   border: "rgba(250,204,21,0.25)",  text: "rgba(250,204,21,0.80)"  },
+  Linux:   { bg: "rgba(251,146,60,0.07)",   border: "rgba(251,146,60,0.28)",  text: "rgba(251,146,60,0.85)"  },
+  Git:     { bg: "rgba(249,115,22,0.07)",   border: "rgba(249,115,22,0.28)",  text: "rgba(249,115,22,0.85)"  },
+  SQLite:  { bg: "rgba(56,189,248,0.07)",   border: "rgba(56,189,248,0.25)",  text: "rgba(56,189,248,0.85)"  },
+  ARM:     { bg: "rgba(148,163,184,0.07)",  border: "rgba(148,163,184,0.25)", text: "rgba(148,163,184,0.80)" },
+}
+
 const roles = [
   {
-    company: "Kosh (YC W20)",
+    company: "Kosh ",
+    companyItalic: "(YC W20)",
     role: "Software Engineer Intern",
     when: "Jun 2026 — Present",
     location: "Gurugram, Haryana",
@@ -16,7 +34,8 @@ const roles = [
     stack: ["Celery", "Redis", "Docker", "Docling", "Gemini"],
   },
   {
-    company: "CSI Computech India",
+    company: "CSI ",
+    companyItalic: "Computech India",
     role: "Software Engineer Intern",
     when: "Jun 2025 — Jul 2025",
     location: "Navi Mumbai",
@@ -50,16 +69,19 @@ export function Experience() {
       </motion.div>
 
       {/* Roles */}
-      <div className="space-y-20 md:space-y-32 divide-y divide-white/[0.07]">
+      <div className="flex flex-col">
         {roles.map((entry, index) => (
-          <motion.article
-            key={entry.company}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.9, ease, delay: index * 0.1 }}
-            className="grid md:grid-cols-12 gap-10 md:gap-16 first:pt-0 pt-20 md:pt-32"
-          >
+          <Fragment key={entry.company}>
+            {index > 0 && (
+              <div className="border-t border-white/[0.07] my-20 md:my-28" />
+            )}
+            <motion.article
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.9, ease, delay: index * 0.1 }}
+              className="grid md:grid-cols-12 gap-10 md:gap-16"
+            >
             {/* Left meta */}
             <div className="md:col-span-4 space-y-5">
               <p className="font-mono text-sm tracking-[0.3em] text-muted-foreground/60 uppercase">{entry.when}</p>
@@ -76,8 +98,8 @@ export function Experience() {
             {/* Right content */}
             <div className="md:col-span-8 space-y-8">
               <h3 className="font-sans text-3xl md:text-5xl lg:text-6xl font-light tracking-tight">
-                {entry.company.split(" ").slice(0, -1).join(" ")}{" "}
-                <span className="italic">{entry.company.split(" ").slice(-1)}</span>
+                {entry.company}
+                <span className="italic">{entry.companyItalic}</span>
               </h3>
               <ul className="space-y-5">
                 {entry.bullets.map((bullet, i) => (
@@ -99,17 +121,30 @@ export function Experience() {
 
               {/* Stack tags */}
               <div className="flex gap-2 flex-wrap pt-4">
-                {entry.stack.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-mono text-sm tracking-wider px-4 py-1.5 border border-white/15 rounded-full text-muted-foreground/80"
-                  >
-                    {tag}
-                  </span>
-                ))}
+                {entry.stack.map((tag) => {
+                  const c = tagColors[tag]
+                  return (
+                    <span
+                      key={tag}
+                      className="font-mono text-sm tracking-wider px-4 py-1.5 rounded-full transition-colors"
+                      style={c ? {
+                        backgroundColor: c.bg,
+                        border: `1px solid ${c.border}`,
+                        color: c.text,
+                      } : {
+                        backgroundColor: "transparent",
+                        border: "1px solid rgba(255,255,255,0.15)",
+                        color: "rgba(255,255,255,0.5)",
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  )
+                })}
               </div>
             </div>
-          </motion.article>
+            </motion.article>
+          </Fragment>
         ))}
       </div>
     </section>
