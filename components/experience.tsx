@@ -6,6 +6,16 @@ const ease = [0.25, 0.46, 0.45, 0.94] as const
 
 const roles = [
   {
+    company: "Kosh (YC W20)",
+    role: "Software Engineer Intern",
+    when: "Jun 2026 — Present",
+    location: "Gurugram, Haryana",
+    bullets: [
+      "Built a distributed bank statement extraction engine (Celery, Redis, Docker) that reduced LLM inference costs by ~90% through a local-first Docling pipeline with intelligent Gemini fallback.",
+    ],
+    stack: ["Celery", "Redis", "Docker", "Docling", "Gemini"],
+  },
+  {
     company: "CSI Computech India",
     role: "Software Engineer Intern",
     when: "Jun 2025 — Jul 2025",
@@ -40,7 +50,7 @@ export function Experience() {
       </motion.div>
 
       {/* Roles */}
-      <div>
+      <div className="space-y-20 md:space-y-32 divide-y divide-white/[0.07]">
         {roles.map((entry, index) => (
           <motion.article
             key={entry.company}
@@ -48,7 +58,7 @@ export function Experience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.9, ease, delay: index * 0.1 }}
-            className="grid md:grid-cols-12 gap-10 md:gap-16"
+            className="grid md:grid-cols-12 gap-10 md:gap-16 first:pt-0 pt-20 md:pt-32"
           >
             {/* Left meta */}
             <div className="md:col-span-4 space-y-5">
