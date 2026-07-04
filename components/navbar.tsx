@@ -190,33 +190,46 @@ export function Navbar() {
 }
 
 // Tab Component
+type TabPosition = { left: number; width: number; opacity: number };
+
 const Tab = ({
   children,
   setPosition,
   onClick,
 }: {
   children: React.ReactNode;
-  setPosition: any;
+  setPosition: React.Dispatch<React.SetStateAction<TabPosition>>;
   onClick: () => void;
 }) => {
   const ref = useRef<HTMLLIElement>(null);
-  
+
+  const handleFocusOrHover = () => {
+    if (!ref.current) return;
+    const { width } = ref.current.getBoundingClientRect();
+    setPosition({
+      width,
+      opacity: 1,
+      left: ref.current.offsetLeft,
+    });
+  };
+
   return (
     <motion.li
       ref={ref}
+      role="link"
+      tabIndex={0}
       onClick={onClick}
-      whileTap={{ scale: 0.95 }}
-      onMouseEnter={() => {
-        if (!ref.current) return;
-        const { width } = ref.current.getBoundingClientRect();
-        setPosition({
-          width,
-          opacity: 1,
-          left: ref.current.offsetLeft,
-        });
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
       }}
+      whileTap={{ scale: 0.95 }}
+      onMouseEnter={handleFocusOrHover}
+      onFocus={handleFocusOrHover}
       // FIX: whitespace-nowrap guarantees the text never wraps and breaks the layout
-      className="relative z-10 block cursor-pointer px-6 py-2.5 font-mono text-xs tracking-[0.2em] uppercase text-white mix-blend-difference whitespace-nowrap"
+      className="relative z-10 block cursor-pointer px-6 py-2.5 font-mono text-xs tracking-[0.2em] uppercase text-white mix-blend-difference whitespace-nowrap focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/60 focus-visible:outline-offset-2"
     >
       {children}
     </motion.li>
@@ -224,7 +237,7 @@ const Tab = ({
 };
 
 // Cursor Component
-const Cursor = ({ position }: { position: any }) => {
+const Cursor = ({ position }: { position: TabPosition }) => {
   return (
     <motion.li
       animate={{

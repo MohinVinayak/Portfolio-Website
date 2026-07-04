@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useMemo, useEffect, useState, useCallback } from "react"
+import { useRef, useMemo, useEffect, useState } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { MathUtils } from "three"
 import type { Mesh, ShaderMaterial } from "three"
@@ -141,6 +141,9 @@ export function SentientSphere() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // Client-only mount flag to defer the WebGL canvas past the SSR/hydration
+    // pass — can't be known during render itself.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
 

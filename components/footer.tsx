@@ -10,15 +10,20 @@ const links = [
 
 export function Footer() {
   const timeRef = useRef<HTMLSpanElement>(null)
+  const yearRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     const update = () => {
-      if (!timeRef.current) return
       const now = new Date()
-      const h = now.getHours().toString().padStart(2, "0")
-      const m = now.getMinutes().toString().padStart(2, "0")
-      const s = now.getSeconds().toString().padStart(2, "0")
-      timeRef.current.textContent = `${h}:${m}:${s} IST`
+      if (timeRef.current) {
+        const h = now.getHours().toString().padStart(2, "0")
+        const m = now.getMinutes().toString().padStart(2, "0")
+        const s = now.getSeconds().toString().padStart(2, "0")
+        timeRef.current.textContent = `${h}:${m}:${s} IST`
+      }
+      if (yearRef.current) {
+        yearRef.current.textContent = String(now.getFullYear())
+      }
     }
     update()
     const id = setInterval(update, 1000)
@@ -78,7 +83,7 @@ export function Footer() {
           </div>
 
           <p className="font-mono text-xs tracking-widest text-muted-foreground/70">
-            © {new Date().getFullYear()} Mohin Vinayak
+            © <span ref={yearRef}>2026</span> Mohin Vinayak
           </p>
         </div>
       </div>

@@ -13,7 +13,6 @@ const projects = [
     tags: ["Python", "FastAPI", "PostgreSQL", "Async"],
     description: "Async evaluation platform for LLM outputs. Rule-based scoring, semantic checks, and LLM-as-judge pipelines.",
     href: "https://github.com/MohinVinayak/Arbiter",
-    image: "/projects/arbiter.jpg",
     accent: "text-accent",
     bar: "bg-accent",
     barCss: "var(--accent)",
@@ -24,7 +23,6 @@ const projects = [
     tags: ["TypeScript", "VS Code API", "Webview"],
     description: "VS Code extension on the marketplace. An animated companion tied to debug events with canvas rendering.",
     href: "https://github.com/MohinVinayak/Code-Dog",
-    image: "/projects/code-dog.jpg",
     accent: "text-emerald-300",
     bar: "bg-emerald-400",
     barCss: "rgb(52 211 153)",
@@ -35,7 +33,6 @@ const projects = [
     tags: ["Python", "Pygame", "Heuristics"],
     description: "A chess engine that plays to lose. Custom heuristics that invert standard board evaluation.",
     href: "https://github.com/MohinVinayak/LoserChess",
-    image: "/projects/loser-chess.jpg",
     accent: "text-amber-300",
     bar: "bg-amber-400",
     barCss: "rgb(251 191 36)",
@@ -51,7 +48,9 @@ export function Works() {
 
   useEffect(() => {
     if (typeof window === "undefined") return
+    // Only knowable client-side (post-mount) so can't be computed at render time.
     const touch = window.matchMedia("(hover: none)").matches
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsTouch(touch)
     if (!touch) return // Only run on touch devices
 

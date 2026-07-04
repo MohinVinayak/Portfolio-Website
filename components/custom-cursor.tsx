@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, useCallback } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null)
@@ -12,8 +12,10 @@ export function CustomCursor() {
   const [isTouchDevice, setIsTouchDevice] = useState(false)
 
   useEffect(() => {
-    // Detect touch devices and skip cursor entirely
+    // Detect touch devices and skip cursor entirely. Only knowable client-side
+    // (post-mount), so this can't be computed during the SSR render pass.
     const isTouch = window.matchMedia("(pointer: coarse)").matches || "ontouchstart" in window
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsTouchDevice(isTouch)
     if (isTouch) return
 
