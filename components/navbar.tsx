@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useLowPowerMode } from "@/hooks/use-low-power-mode"
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -14,7 +15,8 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  
+  const lowPowerMode = useLowPowerMode()
+
   const [position, setPosition] = useState({
     left: 0,
     width: 0,
@@ -97,9 +99,13 @@ export function Navbar() {
               onMouseLeave={() => setPosition((pv) => ({ ...pv, opacity: 0 }))}
             >
               {/* Liquid Glass Layers - Strictly contained by overflow-hidden parent */}
-              <div 
-                className="absolute inset-0 z-0 backdrop-blur-md isolation-auto" 
-                style={{ filter: "url(#lg-dist)" }} 
+              {/* On hardware that's struggling to keep up (measured via useLowPowerMode),
+                  skip the feDisplacementMap distortion filter — it has no GPU fast-path in
+                  most engines and is the main cost of this effect. Plain blur looks nearly
+                  identical and is far cheaper to resample on every scroll frame. */}
+              <div
+                className="absolute inset-0 z-0 backdrop-blur-md isolation-auto"
+                style={lowPowerMode ? undefined : { filter: "url(#lg-dist)" }}
               />
               <div className="absolute inset-0 z-1 bg-white/[0.04]" />
               <div className="absolute inset-0 z-2 rounded-full shadow-[inset_1px_1px_0_rgba(255,255,255,0.15),inset_0_0_8px_rgba(255,255,255,0.05)] pointer-events-none" />
