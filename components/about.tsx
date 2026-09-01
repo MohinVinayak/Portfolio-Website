@@ -54,7 +54,7 @@ export function About() {
         >
           <p>
             ENC undergrad at <span className="text-foreground">Thapar Institute</span>. I write production
-            code in Python, C++, and TypeScript.
+            code in Python and C++.
           </p>
           <p>
             Three projects live and open source — an async LLM evaluation platform, a published VS Code extension, and a
